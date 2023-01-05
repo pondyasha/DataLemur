@@ -1,0 +1,39 @@
+Assume you are given the table on Walmart user transactions. Based on a user's most recent transaction date, write a query to obtain the users and the number of products bought.
+
+Output the user's most recent transaction date, user ID and the number of products sorted by the transaction date in chronological order.
+
+P.S. As of 10 Nov 2022, the official solution was changed from output of the transaction date, number of users and number of products to the current output.
+
+```
+user_transactions Table
+
+| product_id    | user_id       | spend | transaction_date     |
+| ------------- |:-------------:| -----:| -------------------: |
+| 3673          | 123           | 68.90 | 07/08/2022 12:00:00  |
+| 9623          | 123           | 274.10| 07/08/2022 12:00:00  |
+| 1467          | 115           | 19.90 | 07/08/2022 12:00:00  |
+| 2513          | 159           | 25.00 | 07/08/2022 12:00:00  |
+| 1452          | 159.          | 74.50 | 07/10/2022 12:00:00  |
+
+```
+
+```
+with cte_1 as (
+SELECT  
+user_id,
+MAX(transaction_date) as transaction_date
+FROM user_transactions
+GROUP BY 1
+)
+
+SELECT  cte_1.transaction_date,cte_1.user_id, count(product_id) as purchase_count
+
+from cte_1
+LEFT JOIN user_transactions ut on ut.user_id = cte_1.user_id 
+and cte_1.transaction_date = ut.transaction_date
+GROUP BY 1,2
+ORDER BY 1 
+
+```
+
+PS: We can also slove the above problem using Rank function
