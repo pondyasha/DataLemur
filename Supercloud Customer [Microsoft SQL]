@@ -1,0 +1,46 @@
+A Microsoft Azure Supercloud customer is a company which buys at least 1 product from each product category.
+
+Write a query to report the company ID which is a Supercloud customer.
+
+
+```
+customer_contracts Table
+
+| customer_id    | product_id   | amount| 
+| ------------- |:-------------:| -----:| 
+| 1             | 1             | 1000  |
+| 1             | 3             | 2000  | 
+| 1             | 5             | 1500  | 
+| 2             | 2             | 3000  | 
+| 2             | 6             | 2000  | 
+
+
+products Table
+
+| product_category  | product_id    | product_name.               | 
+| -------------     |:-------------:| --------------------------: | 
+| Analytics         | 1             | Azure Databricks            |
+| Analytics         | 2             | Azure Stream Analytics      | 
+| Containers        | 4             | Azure  Kubernetes Analytics | 
+| Containers        | 5             | Virtual Machines            | 
+| Compute           | 6             | Azure Functions             | 
+
+
+```
+
+```
+WITH cte_1 as (
+SELECT customer_id,
+cc.product_id,
+product_category,
+product_name
+FROM customer_contracts cc 
+LEFT JOIN products p on p.product_id = cc.product_id
+)
+
+SELECT customer_id
+FROM cte_1
+GROUP BY 1
+HAVING COUNT(DISTINCT product_category) = 3
+
+```
